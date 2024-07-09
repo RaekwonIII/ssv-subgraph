@@ -20,6 +20,7 @@ type Validator @entity(immutable: false) {
   cluster: Cluster!
   active: Boolean! # bool
   # publicKey: Bytes! # bytes
+  valid: Boolean!
   shares: Bytes! # bytes
   lastUpdateBlockNumber: BigInt! # uint256
   lastUpdateBlockTimestamp: BigInt!

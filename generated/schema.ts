@@ -284,6 +284,19 @@ export class Validator extends Entity {
     this.set("active", Value.fromBoolean(value));
   }
 
+  get valid(): boolean {
+    let value = this.get("valid");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set valid(value: boolean) {
+    this.set("valid", Value.fromBoolean(value));
+  }
+
   get shares(): Bytes {
     let value = this.get("shares");
     if (!value || value.kind == ValueKind.NULL) {
