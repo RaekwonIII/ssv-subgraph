@@ -115,6 +115,8 @@ import {
 //   bAppConstants.save();
 // }
 
+const MAX_PERCENTAGE = BigInt.fromI32(10000);
+
 export function handleFeeExpireTimeUpdated(
   event: FeeExpireTimeUpdatedEvent
 ): void {
@@ -518,7 +520,7 @@ export function handleBAppOptedInByStrategy(
       strategyTokenBalance.riskValue.plus(percentage);
     strategyTokenBalance.save();
   
-    let obligatedBalance = strategyTokenBalance.balance.times(percentage);
+    let obligatedBalance = strategyTokenBalance.balance.times(percentage).div(MAX_PERCENTAGE);
   
     let bAppToken = BAppToken.load(
       event.params.bApp.toHexString().concat(token.toHexString())
@@ -964,7 +966,7 @@ export function handleObligationCreated(event: ObligationCreatedEvent): void {
     strategyTokenBalance.riskValue.plus(percentage);
   strategyTokenBalance.save();
 
-  let obligatedBalance = strategyTokenBalance.balance.times(percentage);
+  let obligatedBalance = strategyTokenBalance.balance.times(percentage).div(MAX_PERCENTAGE);
 
   let bAppToken = BAppToken.load(
     event.params.bApp.toHexString().concat(token.toHexString())
@@ -1023,7 +1025,6 @@ export function handleObligationUpdateProposed(
   obligation.token = token;
   obligation.percentageProposed = event.params.percentage;
   obligation.percentageProposedTimestamp = event.block.timestamp;
-  obligation.percentage = obligation.percentageProposed;
   obligation.save();
 }
 
@@ -1075,7 +1076,7 @@ export function handleObligationUpdated(event: ObligationUpdatedEvent): void {
     strategyTokenBalance.riskValue.plus(percentage);
   strategyTokenBalance.save();
 
-  let obligatedBalance = strategyTokenBalance.balance.times(percentage);
+  let obligatedBalance = strategyTokenBalance.balance.times(percentage).div(MAX_PERCENTAGE);
 
   let bAppToken = BAppToken.load(
     event.params.bApp.toHexString().concat(token.toHexString())
@@ -1328,7 +1329,7 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
       if (obligation.token == token) {
         obligatedBalanceDelta = event.params.amount.times(
           obligation.percentage
-        );
+        ).div(MAX_PERCENTAGE);
         obligation.obligatedBalance = obligation.obligatedBalance.plus(
           obligatedBalanceDelta
         );
@@ -1473,7 +1474,7 @@ export function handleStrategySlashed(event: StrategySlashedEvent): void {
   }
   const slashedStrategyTokenBalance = event.params.percentage.times(
     strategyTokenBalance.balance
-  );
+  ).div(MAX_PERCENTAGE);
   strategyTokenBalance.balance = strategyTokenBalance.balance.minus(
     slashedStrategyTokenBalance
   );
@@ -1492,7 +1493,7 @@ export function handleStrategySlashed(event: StrategySlashedEvent): void {
         // update the obligated balance by keeping the same %, but using the new token balance for this strategy
         obligation.obligatedBalance = strategyTokenBalance.balance.times(
           obligation.percentage
-        );
+        ).div(MAX_PERCENTAGE);
         obligation.save();
       }
     }
@@ -1616,7 +1617,7 @@ export function handleStrategyWithdrawal(event: StrategyWithdrawalEvent): void {
       if (obligation.token == token) {
         obligatedBalanceDelta = event.params.amount.times(
           obligation.percentage
-        );
+        ).div(MAX_PERCENTAGE);
         obligation.obligatedBalance = obligation.obligatedBalance.minus(
           obligatedBalanceDelta
         );
