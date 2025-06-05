@@ -498,6 +498,7 @@ export function handleBAppOptedInByStrategy(
         []
       );
       obligation = new Obligation(obligationId);
+      obligation.percentageProposed = BigInt.zero();
       obligation.percentageProposedTimestamp = BigInt.zero();
       obligation.obligatedBalance = BigInt.zero();
     }
@@ -542,7 +543,6 @@ export function handleBAppOptedInByStrategy(
     obligation.strategyBAppOptIn = strategyBAppOptInId;
     obligation.token = token;
     obligation.percentage = percentage;
-    obligation.percentageProposed = percentage;
     obligation.save();
   }
 }
@@ -988,7 +988,7 @@ export function handleObligationCreated(event: ObligationCreatedEvent): void {
   obligation.strategyBAppOptIn = strategyBAppOptInId;
   obligation.token = token;
   obligation.percentage = percentage;
-  obligation.percentageProposed = percentage;
+  obligation.percentageProposed = BigInt.zero();
   obligation.save();
 }
 
@@ -1100,7 +1100,8 @@ export function handleObligationUpdated(event: ObligationUpdatedEvent): void {
   obligation.obligatedBalance = obligatedBalance;
   obligation.token = token;
   obligation.percentage = percentage;
-  obligation.percentageProposed = percentage;
+  obligation.percentageProposed = BigInt.zero();
+  obligation.percentageProposedTimestamp = BigInt.zero();
   obligation.save();
 }
 
